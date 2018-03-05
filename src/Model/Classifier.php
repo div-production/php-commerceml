@@ -12,6 +12,7 @@ use Zenwalker\CommerceML\ORM\Model;
  * @package Zenwalker\CommerceML\Model
  * @property PropertyCollection properties
  * @property Group[] groups
+ * @property Simple[] priceTypes
  */
 class Classifier extends Model
 {
@@ -23,6 +24,11 @@ class Classifier extends Model
      * @var PropertyCollection
      */
     protected $properties;
+
+    /**
+     * @var Simple[]
+     */
+    protected $priceTypes = [];
 
     public function loadXml()
     {
@@ -80,5 +86,16 @@ class Classifier extends Model
             }
         }
         return $this->groups;
+    }
+
+    public function getPriceTypes()
+    {
+        if (!$this->priceTypes && $this->xml){
+            foreach ($this->xpath('//c:ТипыЦен/c:ТипЦены') as $type){
+                $this->priceTypes[] = new Simple($this->owner, $type);
+            }
+        }
+
+        return $this->priceTypes;
     }
 }
